@@ -17,12 +17,12 @@ class Portfolio
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\OneToMany(targetEntity=Position::class, mappedBy="portfolio", orphanRemoval=true)
      */
-    private $positions;
+    private ArrayCollection $positions;
 
     public function __construct()
     {
