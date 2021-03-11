@@ -22,7 +22,7 @@ class Portfolio
     /**
      * @ORM\OneToMany(targetEntity=Position::class, mappedBy="portfolio", orphanRemoval=true)
      */
-    private ArrayCollection $positions;
+    private $positions;
 
     public function __construct()
     {
