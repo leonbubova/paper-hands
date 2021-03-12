@@ -18,3 +18,9 @@
 
 ### phpstorm files
 /.idea
+
+### vagrant
+.vagrant
+
+### phpmyadmin
+public/phpmyadmin/tmp
