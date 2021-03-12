@@ -12,9 +12,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class OpenPositionCommand extends Command
+class ClosePositionCommand extends Command
 {
-    protected static $defaultName = 'open:position';
+    protected static $defaultName = 'close:position';
     protected static $defaultDescription = 'Add a short description for your command';
 
     /**
@@ -45,9 +45,9 @@ class OpenPositionCommand extends Command
         $this
             ->setDescription(self::$defaultDescription)
             ->addArgument('portfolioId', InputArgument::REQUIRED, 'Specify the Portfolio ID for your position')
-            ->addArgument('ticker', InputArgument::REQUIRED, 'The Ticker Symbol you want to buy')
-            ->addArgument('amount', InputArgument::REQUIRED, 'The amount you want to buy')
-            ->addArgument('price', InputArgument::REQUIRED, 'The price you are buying at')
+            ->addArgument('ticker', InputArgument::REQUIRED, 'The Ticker Symbol you want to sell')
+            ->addArgument('amount', InputArgument::REQUIRED, 'The amount you want to sell')
+            ->addArgument('price', InputArgument::REQUIRED, 'The price you are selling at')
         ;
     }
 
@@ -72,9 +72,9 @@ class OpenPositionCommand extends Command
             throw new \Exception("Portfolio with ID: " . $portfolioId . " does not exist.");
         }
 
-        $position = $this->positionService->openPosition($portfolio, $ticker, $amount, $price);
+        $position = $this->positionService->closePosition($portfolio, $ticker, $amount, $price);
 
-        $io->success('Position opened for ' . $amount . 'x ' . $ticker . ' at ' . $price / 10000 . '$.');
+        $io->success('Position closed for ' . $amount . 'x ' . $ticker . ' at ' . $price / 10000 . '$.');
 
         return Command::SUCCESS;
     }
