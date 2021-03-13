@@ -49,15 +49,19 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    composer install
    ```
-4. Create a new local database in your Vagrant Machine
+4. Run ```vagrant up``` to start your Vagrant Machine
+
+5. Create a new local database in your Vagrant Machine
    ```sh
    php bin/console doctrine:database:create
    ```
-5. Run the existing migrations
+6. Run the existing migrations
    ```sh
    php bin/console doctrine:migrations:migrate
    ```
 
+That's it for initial setup. You now only have to run ```vagrant up``` to start local developement.
+When you are finished run ```vagrant halt```
 
 <!--
 ## Usage
