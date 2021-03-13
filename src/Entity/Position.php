@@ -13,6 +13,8 @@ use phpDocumentor\Reflection\Types\Integer;
  */
 class Position
 {
+    public const CONVERSION_FACTOR = 10000;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -37,6 +39,8 @@ class Position
     private int $amount;
 
     /**
+     * Divide by {@see self::CONVERSION_FACTOR} to get real display price
+     *
      * @var int
      *
      * @ORM\Column(type="integer")

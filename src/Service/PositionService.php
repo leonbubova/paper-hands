@@ -96,4 +96,9 @@ class PositionService
         return $position;
     }
 
+    public function displayAveragePrice(Position $position): float
+    {
+        return $position->getAveragePrice() / $position::CONVERSION_FACTOR;
+    }
+
 }
