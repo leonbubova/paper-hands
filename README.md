@@ -44,8 +44,14 @@ This is an example of how to list things you need to use the software and how to
    git clone https://github.com/leonbubova/paper-hands.git
    ```
 2. Copy ```.envexample``` and rename it to ```.env```
-
-3. Install composer packages
+3. Copy ```Homestead.exmpample.yaml``` and rename it to ```Homestead.yaml```
+4. Edit the path to your project root
+   ```sh
+   folders:
+    -
+        map: /path/to/paper-hands
+   ```
+5. Install composer packages
    ```sh
    composer install
    ```
