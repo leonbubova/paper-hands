@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The result of the parser is an array of statements are extensions of the
  * class defined here.
@@ -7,17 +6,21 @@
  * A statement represents the result of parsing the lexemes.
  */
 
+declare(strict_types=1);
+
 namespace PhpMyAdmin\SqlParser;
 
 use PhpMyAdmin\SqlParser\Components\FunctionCall;
 use PhpMyAdmin\SqlParser\Components\OptionsArray;
+use function array_flip;
+use function array_keys;
+use function count;
+use function in_array;
+use function stripos;
+use function trim;
 
 /**
  * Abstract statement definition.
- *
- * @category Statements
- *
- * @license  https://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  */
 abstract class Statement
 {
@@ -40,7 +43,7 @@ abstract class Statement
      *
      * @var array
      */
-    public static $OPTIONS = array();
+    public static $OPTIONS = [];
 
     /**
      * The clauses of this statement, in order.
@@ -54,16 +57,17 @@ abstract class Statement
      *
      * @var array
      */
-    public static $CLAUSES = array();
+    public static $CLAUSES = [];
 
-    public static $END_OPTIONS = array();
+    /** @var array */
+    public static $END_OPTIONS = [];
 
     /**
      * The options of this query.
      *
-     * @var OptionsArray
-     *
      * @see static::$OPTIONS
+     *
+     * @var OptionsArray
      */
     public $options;
 
@@ -82,12 +86,10 @@ abstract class Statement
     public $last;
 
     /**
-     * Constructor.
-     *
      * @param Parser     $parser the instance that requests parsing
      * @param TokensList $list   the list of tokens to be parsed
      */
-    public function __construct(Parser $parser = null, TokensList $list = null)
+    public function __construct(?Parser $parser = null, ?TokensList $list = null)
     {
         if (($parser !== null) && ($list !== null)) {
             $this->parse($parser, $list);
@@ -120,7 +122,7 @@ abstract class Statement
          *
          * @var array
          */
-        $built = array();
+        $built = [];
 
         /**
          * Statement's clauses.
@@ -171,6 +173,7 @@ abstract class Statement
                 if (! empty($built[$field])) {
                     continue;
                 }
+
                 $built[$field] = true;
             }
 
@@ -193,6 +196,7 @@ abstract class Statement
      *
      * @param Parser     $parser the instance that requests parsing
      * @param TokensList $list   the list of tokens to be parsed
+     *
      * @throws Exceptions\ParserException
      */
     public function parse(Parser $parser, TokensList $list)
@@ -203,7 +207,7 @@ abstract class Statement
          *
          * @var array
          */
-        $parsedClauses = array();
+        $parsedClauses = [];
 
         // This may be corrected by the parser.
         $this->first = $list->idx;
@@ -245,6 +249,7 @@ abstract class Statement
                 ) {
                     $parser->error('Unexpected token.', $token);
                 }
+
                 continue;
             }
 
@@ -283,6 +288,7 @@ abstract class Statement
                     break;
                 }
             }
+
             $list->idx = $lastIdx;
 
             /**
@@ -304,7 +310,7 @@ abstract class Statement
              *
              * @var array
              */
-            $options = array();
+            $options = [];
 
             // Looking for duplicated clauses.
             if (! empty(Parser::$KEYWORD_PARSERS[$token->value])
@@ -317,6 +323,7 @@ abstract class Statement
                     );
                     break;
                 }
+
                 $parsedClauses[$token->value] = true;
             }
 
@@ -324,7 +331,7 @@ abstract class Statement
             // Fix Issue #221: As `truncate` is not a keyword
             // but it might be the beginning of a statement of truncate,
             // so let the value use the keyword field for truncate type.
-            $token_value = in_array($token->keyword, array('TRUNCATE')) ? $token->keyword : $token->value;
+            $token_value = in_array($token->keyword, ['TRUNCATE']) ? $token->keyword : $token->value;
             if (! empty(Parser::$KEYWORD_PARSERS[$token_value]) && $list->idx < $list->count) {
                 $class = Parser::$KEYWORD_PARSERS[$token_value]['class'];
                 $field = Parser::$KEYWORD_PARSERS[$token_value]['field'];
@@ -349,11 +356,13 @@ abstract class Statement
                     );
                     break;
                 }
+
                 if (! $parsedOptions) {
                     if (empty(static::$OPTIONS[$token->value])) {
                         // Skipping keyword because if it is not a option.
                         ++$list->idx;
                     }
+
                     $this->options = OptionsArray::parse(
                         $parser,
                         $list,
@@ -401,6 +410,7 @@ abstract class Statement
                     $parser->error('Keyword at end of statement.', $token);
                     continue;
                 }
+
                 ++$list->idx; // Skipping keyword or last option.
                 $this->$field = $class::parse($parser, $list, $options);
             }
@@ -408,8 +418,7 @@ abstract class Statement
             $this->after($parser, $list, $token);
 
             // #223 Here may make a patch, if last is delimiter, back one
-            // TODO: when not supporting PHP 5.3 anymore, replace this by FunctionCall::class.
-            if ($class === 'PhpMyAdmin\\SqlParser\\Components\\FunctionCall'
+            if ($class === FunctionCall::class
                 && $list->offsetGet($list->idx)->type === Token::TYPE_DELIMITER
             ) {
                 --$list->idx;
@@ -473,6 +482,7 @@ abstract class Statement
      * @param TokensList $list   the list of tokens to be parsed
      *
      * @return bool
+     *
      * @throws Exceptions\ParserException
      */
     public function validateClauseOrder($parser, $list)
@@ -548,12 +558,13 @@ abstract class Statement
 
                     return false;
                 }
+
                 $minIdx = $clauseStartIdx;
             } elseif ($clauseStartIdx !== -1) {
                 $minIdx = $clauseStartIdx;
             }
 
-            $lastIdx = ($clauseStartIdx !== -1) ? $clauseStartIdx : $lastIdx;
+            $lastIdx = $clauseStartIdx !== -1 ? $clauseStartIdx : $lastIdx;
         }
 
         return true;
