@@ -44,6 +44,7 @@ This is an example of how to list things you need to use the software and how to
    git clone https://github.com/leonbubova/paper-hands.git
    ```
 2. Copy ```.envexample``` and rename it to ```.env```
+
 3. Install composer packages
    ```sh
    composer install
