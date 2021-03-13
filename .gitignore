@@ -21,6 +21,7 @@
 
 ### vagrant
 .vagrant
+Homestead.yaml
 
 ### phpmyadmin
 public/phpmyadmin/tmp
