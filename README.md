@@ -43,11 +43,11 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    git clone https://github.com/leonbubova/paper-hands.git
    ```
-2. Install composer packages
+2. Copy ```.envexample``` and rename it to ```.env```
+3. Install composer packages
    ```sh
    composer install
    ```
-3. Copy ```.envexample``` and rename it to ```.env```
 4. Create a new local database in your Vagrant Machine
    ```sh
    php bin/console doctrine:database:create
