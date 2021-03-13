@@ -1,18 +1,20 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Handles the binary to IPv4/IPv6 transformation for text plain
+ *
+ * @package    PhpMyAdmin-Transformations
+ * @subpackage BinaryToIP
  */
-
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Plugins\Transformations\Output;
 
 use PhpMyAdmin\Plugins\TransformationsPlugin;
-use PhpMyAdmin\Utils\FormatConverter;
-use stdClass;
 
 /**
  * Handles the binary to IPv4/IPv6 transformation for text plain
+ *
+ * @package    PhpMyAdmin-Transformations
+ * @subpackage BinaryToIP
  */
 // @codingStandardsIgnoreLine
 class Text_Plain_Binarytoip extends TransformationsPlugin
@@ -33,18 +35,30 @@ class Text_Plain_Binarytoip extends TransformationsPlugin
     /**
      * Does the actual work of each specific transformations plugin.
      *
-     * @param string        $buffer  text to be transformed. a binary string containing
-     *                               an IP address, as returned from MySQL's INET6_ATON
-     *                               function
-     * @param array         $options transformation options
-     * @param stdClass|null $meta    meta information
+     * @param string $buffer  text to be transformed. a binary string containing
+     *                        an IP address, as returned from MySQL's INET6_ATON
+     *                        function
+     * @param array  $options transformation options
+     * @param string $meta    meta information
      *
      * @return string IP address
      */
-    public function applyTransformation($buffer, array $options = [], ?stdClass $meta = null)
+    public function applyTransformation($buffer, array $options = array(), $meta = '')
     {
-        return FormatConverter::binaryToIp($buffer);
+        if (0 !== strpos($buffer, '0x')) {
+            return $buffer;
+        }
+
+        $ipHex = substr($buffer, 2);
+        $ipBin = hex2bin($ipHex);
+
+        if (false === $ipBin) {
+            return $buffer;
+        }
+
+        return @inet_ntop($ipBin);
     }
+
 
     /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
 
@@ -55,7 +69,7 @@ class Text_Plain_Binarytoip extends TransformationsPlugin
      */
     public static function getName()
     {
-        return 'Binary To IPv4/IPv6';
+        return "Binary To IPv4/IPv6";
     }
 
     /**
@@ -65,7 +79,7 @@ class Text_Plain_Binarytoip extends TransformationsPlugin
      */
     public static function getMIMEType()
     {
-        return 'Text';
+        return "Text";
     }
 
     /**
@@ -75,6 +89,6 @@ class Text_Plain_Binarytoip extends TransformationsPlugin
      */
     public static function getMIMESubtype()
     {
-        return 'Plain';
+        return "Plain";
     }
 }
