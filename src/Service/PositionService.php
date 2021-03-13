@@ -12,9 +12,18 @@ class PositionService
 {
     private EntityManagerInterface $em;
 
-    public function __construct(EntityManagerInterface $em)
+    /**
+     * @var PortfolioService
+     */
+    private PortfolioService $portfolioService;
+
+    public function __construct(
+        EntityManagerInterface $em,
+        PortfolioService $portfolioService
+    )
     {
         $this->em = $em;
+        $this->portfolioService = $portfolioService;
     }
 
     public function openPosition(Portfolio $portfolio, string $ticker, int $amount, int $openingPrice): Position
@@ -24,6 +33,8 @@ class PositionService
            'portfolio' => $portfolio,
            'ticker' => $ticker
         ]);
+
+        $this->portfolioService->removeBalance($portfolio, $amount * $openingPrice);
 
         if(!$position)
         {
@@ -80,6 +91,8 @@ class PositionService
             throw new \Exception("Not enough positions to close. Amount: " . $position->getAmount());
         }
 
+        $this->portfolioService->addBalance($portfolio, $amount * $closingPrice);
+
         $position->setAmount($position->getAmount() - $amount);
 
         if($position->getAmount() == 0)
@@ -95,10 +108,4 @@ class PositionService
 
         return $position;
     }
-
-    public function displayAveragePrice(Position $position): float
-    {
-        return $position->getAveragePrice() / $position::CONVERSION_FACTOR;
-    }
-
 }

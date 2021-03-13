@@ -13,8 +13,6 @@ use phpDocumentor\Reflection\Types\Integer;
  */
 class Position
 {
-    public const CONVERSION_FACTOR = 10000;
-
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

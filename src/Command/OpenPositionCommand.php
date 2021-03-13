@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Portfolio;
+use App\Service\ConversionService;
 use App\Service\PositionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -27,15 +28,22 @@ class OpenPositionCommand extends Command
      */
     private PositionService $positionService;
 
+    /**
+     * @var ConversionService
+     */
+    private ConversionService $conversionService;
+
     public function __construct
     (
         EntityManagerInterface $entityManager,
         PositionService $positionService,
+        ConversionService $conversionService,
         string $name = null
     )
     {
         $this->em = $entityManager;
         $this->positionService = $positionService;
+        $this->conversionService = $conversionService;
 
         parent::__construct($name);
     }
@@ -74,7 +82,11 @@ class OpenPositionCommand extends Command
 
         $position = $this->positionService->openPosition($portfolio, $ticker, $amount, $price);
 
-        $io->success('Position opened for ' . $amount . 'x ' . $ticker . ' at ' . $price / 10000 . '$.');
+        $io->success([
+            'Position OPENED for ' . $amount . 'x ' . $ticker . ' at ' . $this->conversionService->convertCurrency($price) . '$ ',
+            'for a total of ' . $this->conversionService->convertCurrency($amount * $price) . '$',
+            'New Portfolio Balance: ' . $this->conversionService->convertCurrency($portfolio->getBalance()) . '$'
+        ]);
 
         return Command::SUCCESS;
     }

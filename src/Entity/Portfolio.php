@@ -24,9 +24,16 @@ class Portfolio
      */
     private $positions;
 
-    public function __construct()
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private int $balance;
+
+    public function __construct(int $balance)
     {
         $this->positions = new ArrayCollection();
+        $this->balance = $balance;
     }
 
     public function getId(): ?int
@@ -60,6 +67,18 @@ class Portfolio
                 $position->setPortfolio(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getBalance(): ?int
+    {
+        return $this->balance;
+    }
+
+    public function setBalance(int $balance): self
+    {
+        $this->balance = $balance;
 
         return $this;
     }
