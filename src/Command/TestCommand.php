@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use GuzzleHttp\Client;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,7 +28,13 @@ class TestCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $io->success('You have a new command!');
+        // Create a client with a base URI
+        $client = new Client(['base_uri' => 'https://financialmodelingprep.com/']);
+        $response = $client->request('GET', 'api/v3/profile/AAPL?apikey=demo');
+
+
+
+        $io->writeln($response->getBody());
 
         return Command::SUCCESS;
     }
