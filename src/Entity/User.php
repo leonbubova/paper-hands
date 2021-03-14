@@ -36,6 +36,16 @@ class User implements UserInterface
      */
     private $password;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Portfolio::class, mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $portfolio;
+
+    public function __construct()
+    {
+        $this->portfolio = new Portfolio($this);
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -110,5 +120,22 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getPortfolio(): ?Portfolio
+    {
+        return $this->portfolio;
+    }
+
+    public function setPortfolio(Portfolio $portfolio): self
+    {
+        // set the owning side of the relation if necessary
+        if ($portfolio->getUser() !== $this) {
+            $portfolio->setUser($this);
+        }
+
+        $this->portfolio = $portfolio;
+
+        return $this;
     }
 }

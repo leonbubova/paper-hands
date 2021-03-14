@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Portfolio
 {
+    public const STARTING_BALANCE = 150000000;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -30,10 +32,17 @@ class Portfolio
      */
     private int $balance;
 
-    public function __construct(int $balance)
+    /**
+     * @ORM\OneToOne(targetEntity=User::class, inversedBy="portfolio", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+
+    public function __construct(User $user)
     {
         $this->positions = new ArrayCollection();
-        $this->balance = $balance;
+        $this->balance = self::STARTING_BALANCE;
+        $this->user = $user;
     }
 
     public function getId(): ?int
@@ -79,6 +88,18 @@ class Portfolio
     public function setBalance(int $balance): self
     {
         $this->balance = $balance;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

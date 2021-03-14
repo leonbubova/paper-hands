@@ -28,7 +28,9 @@ class PortfolioController extends AbstractController
      */
     public function index(): Response
     {
-        $portfolio = $this->entityManager->find(Portfolio::class, 1);
+        $portfolio = $this->entityManager->getRepository(Portfolio::class)->findOneBy([
+            'user' => $this->getUser()
+        ]);
 
         return $this->render('portfolio/index.html.twig', [
             'controller_name' => 'PortfolioController',
