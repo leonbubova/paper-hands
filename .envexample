@@ -29,3 +29,5 @@ APP_SECRET=
 # DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
  DATABASE_URL="mysql://root:secret@127.0.0.1:3306/paper_hands?serverVersion=5.7"
 ###< doctrine/doctrine-bundle ###
+
+FMP_API_KEY=demo

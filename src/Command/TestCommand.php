@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Service\TestService;
 use GuzzleHttp\Client;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -9,11 +10,26 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBag;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class TestCommand extends Command
 {
     protected static $defaultName = 'test:command';
     protected static $defaultDescription = 'Add a short description for your command';
+
+    /**
+     * @var TestService
+     */
+    private TestService $testService;
+
+    public function __construct(TestService $testService, string $name = null)
+    {
+        $this->testService = $testService;
+        parent::__construct($name);
+    }
 
     protected function configure()
     {
@@ -32,9 +48,10 @@ class TestCommand extends Command
         $client = new Client(['base_uri' => 'https://financialmodelingprep.com/']);
         $response = $client->request('GET', 'api/v3/profile/AAPL?apikey=demo');
 
+        $json = json_decode($response->getBody());
 
 
-        $io->writeln($response->getBody());
+        $io->writeln($this->testService->test());
 
         return Command::SUCCESS;
     }
