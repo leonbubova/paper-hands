@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Service\ApiPriceService;
 use App\Service\TestService;
 use GuzzleHttp\Client;
 use Symfony\Component\Console\Command\Command;
@@ -25,9 +26,19 @@ class TestCommand extends Command
      */
     private TestService $testService;
 
-    public function __construct(TestService $testService, string $name = null)
+    /**
+     * @var ApiPriceService
+     */
+    private ApiPriceService $apiPriceService;
+
+    public function __construct(
+        TestService $testService,
+        ApiPriceService $apiPriceService,
+        string $name = null
+    )
     {
         $this->testService = $testService;
+        $this->apiPriceService = $apiPriceService;
         parent::__construct($name);
     }
 
@@ -44,14 +55,7 @@ class TestCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        // Create a client with a base URI
-        $client = new Client(['base_uri' => 'https://financialmodelingprep.com/']);
-        $response = $client->request('GET', 'api/v3/profile/AAPL?apikey=demo');
-
-        $json = json_decode($response->getBody());
-
-
-        $io->writeln($this->testService->test());
+        $io->writeln($this->apiPriceService->getPrice('GOOG'));
 
         return Command::SUCCESS;
     }

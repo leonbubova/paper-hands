@@ -12,8 +12,13 @@ class ConversionService
 {
     public const CONVERSION_FACTOR = 10000;
 
-    public function convertCurrency(int $amount): float
+    public function convertToCurrency(int $amount): float
     {
         return $amount / self::CONVERSION_FACTOR;
+    }
+
+    public function convertToInteger(float $amount): int
+    {
+        return $amount * self::CONVERSION_FACTOR;
     }
 }

@@ -69,12 +69,12 @@ class ShowPortfolioCommand extends Command
             throw new \Exception("Portfolio with ID: " . $portfolioId . " does not exist.");
         }
 
-        $io->write('Balance: ' . $this->conversionService->convertCurrency($portfolio->getBalance()) . '$');
+        $io->write('Balance: ' . $this->conversionService->convertToCurrency($portfolio->getBalance()) . '$');
         $io->newLine();
 
         foreach($portfolio->getPositions() as $position)
         {
-            $io->write($position->getAmount() . "x ". $position->getTicker() . " Buyin: " . $this->conversionService->convertCurrency($position->getAveragePrice()));
+            $io->write($position->getAmount() . "x ". $position->getTicker() . " Buyin: " . $this->conversionService->convertToCurrency($position->getAveragePrice()));
             $io->newLine();
         }
 

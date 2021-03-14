@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Portfolio;
+use App\Service\ApiPriceService;
 use App\Service\ConversionService;
 use App\Service\PositionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,17 +34,24 @@ class OpenPositionCommand extends Command
      */
     private ConversionService $conversionService;
 
+    /**
+     * @var ApiPriceService
+     */
+    private ApiPriceService $apiPriceService;
+
     public function __construct
     (
         EntityManagerInterface $entityManager,
         PositionService $positionService,
         ConversionService $conversionService,
+        ApiPriceService $apiPriceService,
         string $name = null
     )
     {
         $this->em = $entityManager;
         $this->positionService = $positionService;
         $this->conversionService = $conversionService;
+        $this->apiPriceService = $apiPriceService;
 
         parent::__construct($name);
     }
@@ -55,7 +63,6 @@ class OpenPositionCommand extends Command
             ->addArgument('portfolioId', InputArgument::REQUIRED, 'Specify the Portfolio ID for your position')
             ->addArgument('ticker', InputArgument::REQUIRED, 'The Ticker Symbol you want to buy')
             ->addArgument('amount', InputArgument::REQUIRED, 'The amount you want to buy')
-            ->addArgument('price', InputArgument::REQUIRED, 'The price you are buying at')
         ;
     }
 
@@ -65,7 +72,6 @@ class OpenPositionCommand extends Command
         $portfolioId = $input->getArgument('portfolioId');
         $ticker = $input->getArgument('ticker');
         $amount = $input->getArgument('amount');
-        $price = $input->getArgument('price');
 
         if($amount < 1)
         {
@@ -80,12 +86,12 @@ class OpenPositionCommand extends Command
             throw new \Exception("Portfolio with ID: " . $portfolioId . " does not exist.");
         }
 
-        $position = $this->positionService->openPosition($portfolio, $ticker, $amount, $price);
+        $position = $this->positionService->openPosition($portfolio, $ticker, $amount, $this->apiPriceService->getPrice($ticker));
 
         $io->success([
-            'Position OPENED for ' . $amount . 'x ' . $ticker . ' at ' . $this->conversionService->convertCurrency($price) . '$ ',
-            'for a total of ' . $this->conversionService->convertCurrency($amount * $price) . '$',
-            'New Portfolio Balance: ' . $this->conversionService->convertCurrency($portfolio->getBalance()) . '$'
+            'Position OPENED for ' . $amount . 'x ' . $ticker . ' at ' . $this->conversionService->convertToCurrency($this->apiPriceService->getPrice($ticker)) . '$ ',
+            'for a total of ' . $this->conversionService->convertToCurrency($amount * $this->apiPriceService->getPrice($ticker)) . '$',
+            'New Portfolio Balance: ' . $this->conversionService->convertToCurrency($portfolio->getBalance()) . '$'
         ]);
 
         return Command::SUCCESS;
