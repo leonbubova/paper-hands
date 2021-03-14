@@ -3,22 +3,17 @@
 {% block title %}Hello PortfolioController!{% endblock %}
 {% block body %}
     <main>
-        <div class="container-fluid">
-            <h1 class="mt-4">Portfolio</h1>
-            <ol class="breadcrumb mb-4">
-                <li class="breadcrumb-item active">Active Portfolio</li>
-            </ol>
+        <div class="container">
+            <h1 class="mt-4 mb-4">Portfolio</h1>
+
             <div class="row">
                 <div class="col-xl-3">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <i class="fas fa-chart-area mr-1"></i>
                             Total Balance
                         </div>
                         <div class="card-body">
-                            <h4 class="mt-2">
                                 {{ portfolio.balance / 10000 }}$
-                            </h4>
                         </div>
                     </div>
                 </div>
@@ -26,7 +21,6 @@
             </div>
             <div class="card mb-4">
                 <div class="card-header">
-                    <i class="fas fa-table mr-1"></i>
                     Open Positions
                 </div>
                 <div class="card-body">
