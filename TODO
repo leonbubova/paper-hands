@@ -1,0 +1,9 @@
+- optimise authentication/figure out token based authentication and where to show api key for user
+- create frontend to buy and sell
+    - create controller (easy)
+    - call positionservice methods (easy
+    - create twig template and sent form input to positionservice methods
+- create api routes for buy, sell, getbalance, getpositions and figure out more maybe needed routes
+- implement usage of spreads and fees and where to calculate them
+- implement purchase history that logs how many positions got opened/closed at what price and when
+- implement navbar with login/logout button
