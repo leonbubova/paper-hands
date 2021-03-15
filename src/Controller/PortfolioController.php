@@ -25,9 +25,11 @@ class PortfolioController extends AbstractController
 
     /**
      * @Route("/portfolio", name="portfolio")
+     * @Route("/", name="homepage")
      */
     public function index(): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         $portfolio = $this->entityManager->getRepository(Portfolio::class)->findOneBy([
             'user' => $this->getUser()
         ]);
