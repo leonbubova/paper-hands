@@ -72,6 +72,8 @@ This is an example of how to list things you need to use the software and how to
 That's it for initial setup. You now only have to run ```vagrant up``` to start local developement.
 When you are finished run ```vagrant halt```
 
+You can visit the site on ```localhost:8000```
+
 <!--
 ## Usage
 
