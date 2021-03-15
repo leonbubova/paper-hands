@@ -17,17 +17,26 @@ class PositionService
      */
     private PortfolioService $portfolioService;
 
+    /**
+     * @var ApiPriceService
+     */
+    private ApiPriceService $apiPriceService;
+
     public function __construct(
         EntityManagerInterface $em,
-        PortfolioService $portfolioService
+        PortfolioService $portfolioService,
+        ApiPriceService $apiPriceService
     )
     {
         $this->em = $em;
         $this->portfolioService = $portfolioService;
+        $this->apiPriceService = $apiPriceService;
     }
 
-    public function openPosition(Portfolio $portfolio, string $ticker, int $amount, int $openingPrice): Position
+    public function openPosition(Portfolio $portfolio, string $ticker, int $amount): Position
     {
+        $openingPrice = $this->apiPriceService->getPrice($ticker);
+
         /** @var Position $position */
         $position = $this->em->getRepository(Position::class)->findOneBy([
            'portfolio' => $portfolio,
@@ -73,8 +82,10 @@ class PositionService
         return $newAveragePrice = ( $position->getAmount() * $position->getAveragePrice() + $amount * $openingPrice ) / ( $position->getAmount() + $amount );
     }
 
-    public function closePosition(Portfolio $portfolio, string $ticker, int $amount, int $closingPrice): ?Position
+    public function closePosition(Portfolio $portfolio, string $ticker, int $amount): ?Position
     {
+        $closingPrice = $this->apiPriceService->getPrice($ticker);
+
         /** @var Position $position */
         $position = $this->em->getRepository(Position::class)->findOneBy([
             'portfolio' => $portfolio,

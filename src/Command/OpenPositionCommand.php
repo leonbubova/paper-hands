@@ -86,7 +86,7 @@ class OpenPositionCommand extends Command
             throw new \Exception("Portfolio with ID: " . $portfolioId . " does not exist.");
         }
 
-        $position = $this->positionService->openPosition($portfolio, $ticker, $amount, $this->apiPriceService->getPrice($ticker));
+        $position = $this->positionService->openPosition($portfolio, $ticker, $amount);
 
         $io->success([
             'Position OPENED for ' . $amount . 'x ' . $ticker . ' at ' . $this->conversionService->convertToCurrency($this->apiPriceService->getPrice($ticker)) . '$ ',

@@ -85,7 +85,7 @@ class ClosePositionCommand extends Command
             throw new \Exception("Portfolio with ID: " . $portfolioId . " does not exist.");
         }
 
-        $position = $this->positionService->closePosition($portfolio, $ticker, $amount, $this->apiPriceService->getPrice($ticker));
+        $position = $this->positionService->closePosition($portfolio, $ticker, $amount);
 
         $io->success([
             'Position CLOSED for ' . $amount . 'x ' . $ticker . ' at ' . $this->conversionService->convertToCurrency($this->apiPriceService->getPrice($ticker)) . '$ ',
