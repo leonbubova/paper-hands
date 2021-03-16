@@ -20,9 +20,9 @@
                         {{ form_row(registrationForm.plainPassword, {
                             label: 'Password'
                         }) }}
-                        {{ form_row(registrationForm.agreeTerms) }}
 
-                        <button type="submit" class="btn btn-lg btn-primary">Register</button>
+                        <button type="submit" class="btn btn-lg btn-primary mb-4">Register</button>
+                        <div><a href="{{ path('app_login') }}">Sign in</a></div>
                         {{ form_end(registrationForm) }}
                     </div>
                 </div>

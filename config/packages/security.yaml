@@ -21,6 +21,8 @@ security:
             guard:
                 authenticators:
                     - App\Security\CustomAuthenticator
+                    - App\Security\ApiTokenAuthenticator
+                entry_point: App\Security\CustomAuthenticator
             logout:
                 path: app_logout
 

@@ -41,8 +41,14 @@ class User implements UserInterface
      */
     private $portfolio;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $token;
+
     public function __construct()
     {
+        $this->token = bin2hex(random_bytes(60));
         $this->portfolio = new Portfolio($this);
     }
 
@@ -135,6 +141,18 @@ class User implements UserInterface
         }
 
         $this->portfolio = $portfolio;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(string $token): self
+    {
+        $this->token = $token;
 
         return $this;
     }
