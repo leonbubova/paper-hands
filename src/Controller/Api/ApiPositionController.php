@@ -1,16 +1,22 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Api;
 
 use App\Entity\Portfolio;
 use App\Service\PositionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PositionController extends AbstractController
+/**
+ * Class ApiPositionController
+ * @package App\Controller\Api
+ * @Route ("/api/position")
+ */
+class ApiPositionController extends AbstractController
 {
     /**
      * @var EntityManagerInterface
@@ -30,7 +36,7 @@ class PositionController extends AbstractController
     }
 
     /**
-     * @Route("/position/open", name="position_open")
+     * @Route("/open", name="api_position_open")
      * @param Request $request
      * @return Response
      */
@@ -48,16 +54,20 @@ class PositionController extends AbstractController
         {
             $this->positionService->openPosition($portfolio, $request->request->get('ticker'), $request->request->get('amount'));
 
-            return $this->redirectToRoute('portfolio');
+            return new JsonResponse([
+                'message' => 'Position opened.'
+            ]);
         }
-
-        return $this->render('position/open.html.twig', [
-            'controller_name' => 'PositionController'
-        ]);
+        else
+        {
+            return new JsonResponse([
+                'message' => 'Could not open position!'
+            ]);
+        }
     }
 
     /**
-     * @Route("/position/close", name="position_close")
+     * @Route("/close", name="api_position_close")
      * @param Request $request
      * @return Response
      */
@@ -75,11 +85,15 @@ class PositionController extends AbstractController
         {
             $this->positionService->closePosition($portfolio, $request->request->get('ticker'), $request->request->get('amount'));
 
-            return $this->redirectToRoute('portfolio');
+            return new JsonResponse([
+                'message' => 'Position closed.'
+            ]);
         }
-
-        return $this->render('position/close.html.twig', [
-            'controller_name' => 'PositionController'
-        ]);
+        else
+        {
+            return new JsonResponse([
+                'message' => 'Could not close position!'
+            ]);
+        }
     }
 }
