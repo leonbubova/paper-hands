@@ -33,9 +33,9 @@ To get a local copy up and running follow these simple steps.
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* install composer
-* install vagrant
-* install virtualbox
+* install composer 
+* install vagrant (tested with vagrant 2.2.14)
+* install virtualbox (tested with virtualbox 6.1)
 
 ### Installation
 
