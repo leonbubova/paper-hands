@@ -11,7 +11,7 @@ sites:
         map: homestead.test
         to: /home/vagrant/code/public
 databases:
-    - homestead
+    - paper_hands
 features:
     -
         mysql: true
